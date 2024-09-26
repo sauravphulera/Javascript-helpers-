@@ -87,7 +87,7 @@ Have you all used <code>React.memo()</code> lets see how this function would hav
 We will implement a general <code>memo()</code> function, which caches the result once called, so when same arguments are passed in, the result will be returned right away.
 The arguments are arbitrary, so memo should accept an extra resolver parameter, which is used to generate the cache key, like what <code> _.memoize()</code>  does.
 
-
+```
 ```javascript
 function memo(func, resolver) {
   const cache = {};
@@ -106,5 +106,60 @@ function memo(func, resolver) {
     cache[key] = func.apply(context, args);
     return cache[key];
   }
+}
+```
+## Find corresponding node in two identical DOM tree
+
+**Recursion**
+```javascript
+function findCorrespondingNodeRecursively(a, bA, bB) {
+  if (a === bA) {
+    return bB;
+  }
+  
+  for (let i = 0; i < bA.children.length; i++) {
+    const childB = bB.children[i];
+    const result = findCorrespondingNodeRecursively(a, bA.children[i], childB);
+    if (result) {
+      return result;
+    }
+  }
+  
+  return null;
+}
+```
+**Iterative**
+```javascript
+function findCorrespondingNodeIteratively(a, bA, bB) {
+  const stackA = [bA];
+  const stackB = [bB];
+  
+  while (stackA.length) {
+    const nodeA = stackA.pop();
+    const nodeB = stackB.pop();
+    
+    if (nodeA === a) {
+      return nodeB;
+    }
+    
+    for (let i = nodeA.children.length - 1; i >= 0; i--) {
+      stackA.push(nodeA.children[i]);
+      stackB.push(nodeB.children[i]);
+    }
+  }
+  
+  return null;
+}
+```
+**Tree Walker DOM API**
+```javascript
+const findCorrespondingNode = (rootA, rootB, target) => {
+  const rootAWalker = document.createTreeWalker(rootA, NodeFilter.SHOW_ELEMENT);
+  const rootBWalker = document.createTreeWalker(rootB, NodeFilter.SHOW_ELEMENT);
+  let currentNodes = [rootAWalker.currentNode, rootBWalker.currentNode];
+  while (currentNodes[0] !== target) {
+    currentNodes = [rootAWalker.nextNode(), rootBWalker.nextNode()];
+  }
+  return currentNodes[1];
 }
 ```
