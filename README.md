@@ -176,3 +176,55 @@ const findCorrespondingNode = (rootA, rootB, target) => {
   return currentNodes[1];
 }
 ```
+
+## Detect Type of a value
+For all the basic data types in JavaScript, how could you write a function to detect the type of arbitrary data?
+
+Besides basic types, you need to also handle also commonly used complex data type including <code>Array, ArrayBuffer, Map, Set, Date and Function</code>
+
+The goal is not to list up all the data types but to show us how to solve the problem when we need to.
+
+The type should be lowercase
+
+**Solution**
+```javascript
+function detectType(data) {
+  if(data === null) {
+    return 'null'
+  }
+  const type = typeof data;
+
+  if (type !== 'object') {
+    return type;
+  }
+  const constructor = data.constructor;
+  switch(constructor) {
+    case Number: 
+    return 'number';
+
+    case Array:
+    return 'array';
+
+    case ArrayBuffer: 
+    return 'arraybuffer';
+
+    case Map:  
+    return 'map';
+
+    case Set: 
+    return 'set';
+
+    case Date: 
+    return 'date';
+
+    case Function: 
+    return 'function';
+
+    case String: 
+    return 'string';
+
+    case Boolean: 
+    return 'boolean';
+  }
+}
+```
