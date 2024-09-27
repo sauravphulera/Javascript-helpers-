@@ -87,7 +87,6 @@ Have you all used <code>React.memo()</code> lets see how this function would hav
 We will implement a general <code>memo()</code> function, which caches the result once called, so when same arguments are passed in, the result will be returned right away.
 The arguments are arbitrary, so memo should accept an extra resolver parameter, which is used to generate the cache key, like what <code> _.memoize()</code>  does.
 
-```
 ```javascript
 function memo(func, resolver) {
   const cache = {};
