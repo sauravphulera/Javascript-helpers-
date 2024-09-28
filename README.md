@@ -227,3 +227,73 @@ function detectType(data) {
   }
 }
 ```
+## Implement JSON.stringify()
+In this problem, you are asked to implement your own version of JSON.stringify().  
+JSON.stringify() support two more parameters which is not covered here.
+
+```javascript
+function getArrayString(data) {
+  const str = "[";
+  const res =  data.reduce((str,value, i, arr) => {
+    if(typeof value === 'symbol') {
+      str+= 'null';
+      return str;
+    }
+      str += stringify(value);
+    if(i !== arr.length -1 ) {
+      str += ','
+    }
+    return str;
+  }, str)
+  return res + ']'
+}
+/**
+ * @param {any} data
+ * @return {string}
+ */
+function stringify(data) {
+  const type = detectType(data);
+
+  if(type === 'bigint') {
+    throw('Do not know how to serialize a BigInt')
+  }
+
+  const nulls = [NaN, null, undefined, Infinity];
+  if(nulls.includes(data)) {
+    return 'null'
+  }
+
+  if(type === null) {
+    return 'null'
+  }
+  if(type === 'string') {
+    return '"' + data + '"'
+  }
+  if (type === 'boolean' || type === 'number') {
+    return ""+data;
+  }
+
+  if(type === 'array') {
+    return getArrayString(data);
+  }
+
+  if(type === 'date') {
+    return '"'+data.toISOString()+'"';
+  }                              
+
+  if(typeof data === 'object') {
+     const keys = Object.keys(data);
+     let res = '{';
+     for(const [index, key] of keys.entries()) {
+      if(data[key] === undefined) continue;
+        res += '"' + key + '":'
+        res += stringify(data[key]);
+        if(index !== keys.length -1) {
+          res += ','
+        }
+     }
+     res += '}'
+     return res;
+  } 
+}
+```
